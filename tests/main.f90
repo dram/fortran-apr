@@ -16,7 +16,11 @@ program main
     i = apr_pool_create_ex(pool, c_null_ptr, c_null_ptr, c_null_ptr)
     print *, "apr_pool_create_ex", i
 
-    i = apr_match_glob("sources/*.f90" // char(0), cptr, pool)
+    block
+      character(:), allocatable, target :: pattern
+      pattern = "sources/*.f90" // char(0)
+      i = apr_match_glob(c_loc(pattern), cptr, pool)
+    end block
     print *, "apr_match_glob", i
 
     call c_f_pointer(cptr, fptr)

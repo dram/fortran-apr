@@ -19,10 +19,9 @@ module apr
      end function apr_array_pop
 
      function apr_match_glob(dir_pattern, result, p) bind(c)
-       use iso_c_binding, only: c_char, c_int, c_ptr
-       character(c_char), intent(in) :: dir_pattern (*)
+       use iso_c_binding, only: c_int, c_ptr
+       type(c_ptr), value :: dir_pattern, p
        type(c_ptr), intent(out) :: result
-       type(c_ptr), value :: p
        integer(c_int) apr_match_glob
      end function apr_match_glob
 
