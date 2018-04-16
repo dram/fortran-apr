@@ -6,7 +6,8 @@ program main
   block
     use apr
 
-    type(c_ptr) pool, array
+    type(c_ptr) pool, cptr
+    type(apr_array_header_t), pointer :: fptr
     integer(c_int) i
 
     i = apr_pool_initialize()
@@ -15,8 +16,22 @@ program main
     i = apr_pool_create_ex(pool, c_null_ptr, c_null_ptr, c_null_ptr)
     print *, "apr_pool_create_ex", i
 
-    i = apr_match_glob('sources/*.f90', array, pool)
+    i = apr_match_glob("sources/*.f90" // char(0), cptr, pool)
     print *, "apr_match_glob", i
+
+    call c_f_pointer(cptr, fptr)
+
+    block
+      integer i
+      type(c_ptr), pointer :: entries (:)
+      character(7), pointer :: name
+
+      call c_f_pointer(fptr % elts, entries, [fptr % nelts])
+      do i = 1, size(entries)
+         call c_f_pointer(entries(i), name)
+         print *, name
+      end do
+    end block
 
     call apr_pool_clear(pool)
 

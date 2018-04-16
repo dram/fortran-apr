@@ -5,6 +5,12 @@ module apr
 
   include "constants.f90"
 
+  type, bind(c) :: apr_array_header_t
+     type(c_ptr) pool
+     integer(c_int) elt_size, nelts, nalloc
+     type(c_ptr) elts
+  end type apr_array_header_t
+
   interface
      function apr_array_pop(arr) bind(c)
        use iso_c_binding, only: c_ptr
